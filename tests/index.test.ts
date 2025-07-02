@@ -1,10 +1,10 @@
-import { afterAll, describe, test } from 'bun:test'
+import { describe, test } from 'bun:test'
 import { doesNotThrow } from 'node:assert'
 import { readdirSync, readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { exportKIF, type Record } from 'tsshogi'
 import { TPASchema } from '../src/models/tpa.dto'
-import { exportKIF, Record } from 'tsshogi'
 
 type Failure = {
   file: string

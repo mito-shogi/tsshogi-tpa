@@ -10,5 +10,5 @@ export enum CustomMetadataKey {
   /**
    * ヒント
    */
-  HINT = 'ヒント',
+  HINT = 'ヒント'
 }

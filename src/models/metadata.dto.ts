@@ -1,6 +1,6 @@
-import { CustomMetadataKey } from '@/constant/metadata'
 import { RecordMetadataKey } from 'tsshogi'
 import { z } from 'zod'
+import { CustomMetadataKey } from '@/constant/metadata'
 
 /**
  * メタデータ
