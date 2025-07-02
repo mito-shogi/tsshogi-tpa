@@ -1,5 +1,5 @@
 {
-  "name": "Kif Parser",
+  "name": "Tsumepara Parser",
   "dockerComposeFile": ["docker-compose.yaml"],
   "service": "app",
   "workspaceFolder": "/home/vscode/app",

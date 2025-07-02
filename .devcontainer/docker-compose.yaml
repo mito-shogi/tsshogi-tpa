@@ -10,6 +10,11 @@ services:
     tty: true
     stdin_open: true
 
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+
 volumes:
   node_modules:
   tests:

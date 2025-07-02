@@ -1,8 +1,9 @@
-import { afterAll, describe, test } from 'bun:test'
+import { describe, test } from 'bun:test'
 import { doesNotThrow } from 'node:assert'
 import { readdirSync, readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { exportKIF, type Record } from 'tsshogi'
 import { TPASchema } from '../src/models/tpa.dto'
 
 type Failure = {
@@ -17,24 +18,15 @@ const dataDir = join(__dirname, 'data')
 const txtFiles = readdirSync(dataDir)
   .filter((f) => f.endsWith('.txt'))
   .sort((a, b) => a.localeCompare(b))
-const failures: Failure[] = []
 
 describe('Parse', () => {
-  afterAll(() => {
-    for (const failure of failures) {
-      console.error(`Failed ${failure.file}: ${failure.error.message}`)
-    }
-  })
-
   for (const fileName of txtFiles) {
     test(`File: ${fileName}`, () => {
       const content = readFileSync(join(dataDir, fileName), 'utf8')
-      try {
-        doesNotThrow(() => TPASchema.parse(content))
-      } catch (error) {
-        failures.push({ file: fileName, error: error as Error })
-        throw error
-      }
+      doesNotThrow(() => {
+        const record: Record = TPASchema.parse(content).record
+        console.log(exportKIF(record))
+      })
     })
   }
 })

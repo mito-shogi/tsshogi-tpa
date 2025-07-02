@@ -1,12 +1,13 @@
+import { RecordMetadataKey } from 'tsshogi'
 import { z } from 'zod'
-import { MetadataKey } from '@/constant/metadata'
+import { CustomMetadataKey } from '@/constant/metadata'
 
 /**
  * メタデータ
  */
 export const MetadataSchema = z
   .object({
-    key: z.nativeEnum(MetadataKey),
+    key: z.union([z.nativeEnum(RecordMetadataKey), z.nativeEnum(CustomMetadataKey)]),
     value: z.union([z.string(), z.number()])
   })
   .transform((v) => ({
