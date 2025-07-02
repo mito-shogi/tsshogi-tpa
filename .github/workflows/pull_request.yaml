@@ -18,11 +18,19 @@ jobs:
         uses: actions/checkout@v4
       - name: Fetch develop branch
         run: git fetch origin develop:refs/remotes/origin/develop
+      - name: Get first commit message
+        id: first_commit
+        run: |
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          FIRST_COMMIT_MSG=$(git log origin/develop..$BRANCH_NAME --pretty=format:%s | tail -n 1)
+          if [ -z "$FIRST_COMMIT_MSG" ]; then
+            FIRST_COMMIT_MSG="Auto PR: $BRANCH_NAME to develop"
+          fi
+          echo "message=$FIRST_COMMIT_MSG" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: develop
-          title: Auto PR: ${{ github.ref_name }} to develop
-          body: This PR was automatically created by GitHub Actions.
+          title: ${{ steps.first_commit.outputs.message }}
           draft: true
