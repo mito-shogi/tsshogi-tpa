@@ -1,4 +1,4 @@
-name: Auto PR to develop
+name: Create Pull Request
 
 on:
   push:
@@ -6,30 +6,34 @@ on:
       - 'features/**'
       - 'fix/**'
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
-  create-pr:
+  create:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set up GitHub CLI
-        uses: cli/cli-action@v2
-
-      - name: Create PR
+      - name: Fetch develop branch
+        run: git fetch origin develop:refs/remotes/origin/develop
+      - name: Get first commit message
+        id: first_commit
+        run: |
+          FIRST_COMMIT_MSG=$(git log origin/develop..HEAD --pretty=format:%s | tail -n 1)
+          if [ -z "$FIRST_COMMIT_MSG" ]; then
+            FIRST_COMMIT_MSG="Auto PR: ${GITHUB_REF#refs/heads/} to develop"
+          fi
+          echo "message=$FIRST_COMMIT_MSG" >> $GITHUB_OUTPUT
+      - name: Create Pull Request
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
-          # Check if PR already exists
           PR_EXISTS=$(gh pr list --base develop --head "$BRANCH_NAME" --json number --jq 'length')
           if [ "$PR_EXISTS" -eq 0 ]; then
-            # Get the first commit message in the diff with develop
-            FIRST_COMMIT_MSG=$(git log develop..$BRANCH_NAME --pretty=format:%s | tail -n 1)
-            if [ -z "$FIRST_COMMIT_MSG" ]; then
-              FIRST_COMMIT_MSG="Auto PR: $BRANCH_NAME to develop"
-            fi
-            gh pr create --base develop --head "$BRANCH_NAME" --title "$FIRST_COMMIT_MSG" --body "This PR was automatically created by GitHub Actions." --draft
+            gh pr create --base develop --head "$BRANCH_NAME" --title "${{ steps.first_commit.outputs.message }}" --fill --draft
           else
             echo "PR already exists."
           fi

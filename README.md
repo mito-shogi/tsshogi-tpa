@@ -1,21 +1,21 @@
 ## @mito-shogi/tsshogi-tpa
 
-独自形式で配布されている棋譜データをtsshogiのRecord型に変換するためのライブラリです.
+本ライブラリは、詰将棋パラダイスなどで配布されている独自形式の棋譜データを、tsshogiのRecord型へとスマートに変換するためのものです。将棋の記録管理や解析を、より洗練された形で行いたい方におすすめです。
 
 ### 対応データ
 
 - [x] 詰将棋パラダイス
 
-### 導入
+### 導入方法
 
-GitHub Package Registryを利用しているので`.npmrc`または`npm login`が必要になります
+GitHub Package Registryを利用しているため、事前に`.npmrc`の設定または`npm login`が必要です。
 
 ```zsh
 # .npmrc
 registry=https://npm.pkg.github.com/mito-shogi
 ```
 
-インストールは以下のコマンドをご利用ください
+インストールは以下のコマンドからお選びいただけます。
 
 ```zsh
 # npm
@@ -34,7 +34,7 @@ bun add @mito-shogi/tsshogi-tpa
 ### 使い方
 
 ```ts
-import { importTPA } from '@tsshogi/kanna'
+import { importTPA } from '@mito-shogi/tsshogi-tpa'
 import { Record } from 'tsshogi'
 
 const text: string = "" // 詰将棋パラダイスのテキストデータ
@@ -43,7 +43,9 @@ if (record instanceof Error) return
 // recordを使って処理
 ```
 
-この結果、以下のようなレスポンスが得られます
+このようにして、詰将棋パラダイスのテキストデータをRecord型へ変換できます。
+
+#### 変換結果の例
 
 ```zsh
 表題：ﾁｮｺﾏｶ銀
@@ -74,13 +76,13 @@ if (record instanceof Error) return
 手数----指手---------消費時間--
 ```
 
-> 指し手も出力されますが、ネタバレ防止のためにここでは記載していません
+> ※ 指し手も出力されますが、ネタバレ防止のためここでは省略しています。
 
-複数の詰み手順がある場合、それら全てを出力します。
+複数の詰み手順が存在する場合、それらすべてを出力します。
 
-KIF形式以外の出力をした場合、カスタムメタデータは失われてしまいます。
+KIF形式以外で出力した場合、カスタムメタデータは保持されませんのでご注意ください。
 
-## 参考
+## 参考文献
 
 - [tsshogi](https://github.com/sunfish-shogi/tsshogi)
 
