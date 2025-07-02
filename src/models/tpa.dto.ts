@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { chunk } from 'lodash'
 import { importCSA, type Move, type Record, RecordMetadataKey, SpecialMoveType, Square } from 'tsshogi'
 import { z } from 'zod'
@@ -11,6 +12,7 @@ import { MoveSchema } from './move.dto'
 import { RecordSchema } from './record.dto'
 import { SquareSchema } from './square.dto'
 
+dayjs.extend(customParseFormat)
 export const TPASchema = z.preprocess(
   // biome-ignore lint/suspicious/noExplicitAny: required for dynamic query parsing
   (query: any) => {
