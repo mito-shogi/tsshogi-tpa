@@ -16,8 +16,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Fetch develop branch
-        run: git fetch origin develop:refs/remotes/origin/develop
       - name: Get first commit message
         id: first_commit
         run: |
