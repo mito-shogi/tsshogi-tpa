@@ -26,9 +26,17 @@ jobs:
           fi
           echo "message=$FIRST_COMMIT_MSG" >> $GITHUB_OUTPUT
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          base: develop
-          title: ${{ steps.first_commit.outputs.message }}
-          draft: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          PR_EXISTS=$(gh pr list --base develop --head "$BRANCH_NAME" --json number --jq 'length')
+          if [ "$PR_EXISTS" -eq 0 ]; then
+            FIRST_COMMIT_MSG=$(git log origin/develop..$BRANCH_NAME --pretty=format:%s | tail -n 1)
+            if [ -z "$FIRST_COMMIT_MSG" ]; then
+              FIRST_COMMIT_MSG="Auto PR: $BRANCH_NAME to develop"
+            fi
+            gh pr create --base develop --head "$BRANCH_NAME" --title "$FIRST_COMMIT_MSG" --draft
+          else
+            echo "PR already exists."
+          fi
