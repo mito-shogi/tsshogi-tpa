@@ -1,9 +1,9 @@
 import dayjs from 'dayjs'
 import { chunk } from 'lodash'
-import { importCSA, type Move, type Record, SpecialMoveType, Square } from 'tsshogi'
+import { importCSA, type Move, type Record, RecordMetadataKey, SpecialMoveType, Square } from 'tsshogi'
 import { z } from 'zod'
 import { Color } from '@/constant/color'
-import { MetadataKey } from '@/constant/metadata'
+import { CustomMetadataKey } from '@/constant/metadata'
 import { BoardSchema } from './board.dto'
 import { HandSchema } from './hand.dto'
 import { MetadataSchema } from './metadata.dto'
@@ -87,15 +87,15 @@ export const TPASchema = z.preprocess(
         })
       ),
       metadata: [
-        { key: MetadataKey.TITLE, value: v.title },
-        { key: MetadataKey.AUTHOR, value: v.authorname },
-        { key: MetadataKey.PUBLISHED_BY, value: '詰将棋パラダイス' },
-        { key: MetadataKey.PUBLISHED_AT, value: dayjs(v.workupdate).format('YYYY/MM/DD') },
-        { key: MetadataKey.LEVEL, value: v.level },
-        { key: MetadataKey.POINT, value: v.point },
-        { key: MetadataKey.LENGTH, value: v.progresscnt },
-        { key: MetadataKey.OPUS_NAME, value: '詰将棋パラダイス' },
-        { key: MetadataKey.OPUS_NO, value: v.workid }
+        { key: RecordMetadataKey.TITLE, value: v.title },
+        { key: RecordMetadataKey.AUTHOR, value: v.authorname },
+        { key: RecordMetadataKey.PUBLISHED_BY, value: '詰将棋パラダイス' },
+        { key: RecordMetadataKey.PUBLISHED_AT, value: dayjs(v.workupdate).format('YYYY/MM/DD') },
+        { key: CustomMetadataKey.LEVEL, value: v.level },
+        { key: CustomMetadataKey.POINT, value: v.point },
+        { key: RecordMetadataKey.LENGTH, value: v.progresscnt },
+        { key: RecordMetadataKey.OPUS_NAME, value: '詰将棋パラダイス' },
+        { key: RecordMetadataKey.OPUS_NO, value: v.workid }
       ].map((v) => MetadataSchema.parse(v))
     }))
     .transform((v) => ({
@@ -121,6 +121,14 @@ export const TPASchema = z.preprocess(
             }
           }
           record.append(SpecialMoveType.RESIGN)
+        }
+        for (const metadata of v.metadata) {
+          if (Object.values(RecordMetadataKey).includes(metadata.key as RecordMetadataKey)) {
+            record.metadata.setStandardMetadata(metadata.key as RecordMetadataKey, metadata.value.toString())
+          }
+          if (Object.values(CustomMetadataKey).includes(metadata.key as CustomMetadataKey)) {
+            record.metadata.setCustomMetadata(metadata.key as CustomMetadataKey, metadata.value.toString())
+          }
         }
         return record
       })()
