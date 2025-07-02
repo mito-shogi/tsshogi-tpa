@@ -1,4 +1,4 @@
-name: Auto PR to develop
+name: Create Pull Request
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
       - 'fix/**'
 
 jobs:
-  create-pr:
+  create:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
