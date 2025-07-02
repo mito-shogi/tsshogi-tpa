@@ -33,7 +33,7 @@ jobs:
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           PR_EXISTS=$(gh pr list --base develop --head "$BRANCH_NAME" --json number --jq 'length')
           if [ "$PR_EXISTS" -eq 0 ]; then
-            gh pr create --base develop --head "$BRANCH_NAME" --title "${{ steps.first_commit.outputs.message }}" --body "This PR was automatically created by GitHub Actions." --draft
+            gh pr create --base develop --head "$BRANCH_NAME" --title "${{ steps.first_commit.outputs.message }}" --fill --draft
           else
             echo "PR already exists."
           fi
