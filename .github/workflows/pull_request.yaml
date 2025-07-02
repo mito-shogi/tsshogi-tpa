@@ -1,0 +1,35 @@
+name: Auto PR to develop
+
+on:
+  push:
+    branches:
+      - 'features/**'
+      - 'fix/**'
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up GitHub CLI
+        uses: cli/cli-action@v2
+
+      - name: Create PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          # Check if PR already exists
+          PR_EXISTS=$(gh pr list --base develop --head "$BRANCH_NAME" --json number --jq 'length')
+          if [ "$PR_EXISTS" -eq 0 ]; then
+            # Get the first commit message in the diff with develop
+            FIRST_COMMIT_MSG=$(git log develop..$BRANCH_NAME --pretty=format:%s | tail -n 1)
+            if [ -z "$FIRST_COMMIT_MSG" ]; then
+              FIRST_COMMIT_MSG="Auto PR: $BRANCH_NAME to develop"
+            fi
+            gh pr create --base develop --head "$BRANCH_NAME" --title "$FIRST_COMMIT_MSG" --body "This PR was automatically created by GitHub Actions." --draft
+          else
+            echo "PR already exists."
+          fi

@@ -1,0 +1,52 @@
+{
+  "name": "@mito-shogi/tsshogi-tpa",
+  "version": "0.0.1",
+  "description": "詰将棋パラダイス形式の棋譜データをパースするライブラリです",
+  "author": "ultemica",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mito-shogi/tsshogi-tpa.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/mito-shogi",
+    "access": "public"
+  },
+  "config": {
+    "commitizen": {
+      "path": "@commitlint/cz-commitlint"
+    }
+  },
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "build": "bun build src/index.ts --sourcemap=external --minify --outdir dist",
+    "prebuild": "rimraf dist",
+    "postbuild": "bunx tsc && tsc-alias",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.13",
+    "lodash": "^4.17.21",
+    "tsshogi": "^1.9.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.0.6",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@commitlint/cz-commitlint": "^19.8.1",
+    "@types/bun": "^1.2.17",
+    "@types/lodash": "^4.17.19",
+    "@types/node": "^24.0.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "rimraf": "^6.0.1",
+    "tsc-alias": "^1.8.16",
+    "zod": "^3.25.67"
+  }
+}
