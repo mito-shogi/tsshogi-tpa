@@ -5,15 +5,10 @@ services:
       dockerfile: Dockerfile
     volumes:
       - node_modules:/home/vscode/app/node_modules
-      - tests:/home/vscode/app/tests
+      - tests:/home/vscode/app/__tests__
       - ../:/home/vscode/app:cached
     tty: true
     stdin_open: true
-
-  redis:
-    image: redis:latest
-    ports:
-      - 6379:6379
 
 volumes:
   node_modules:
