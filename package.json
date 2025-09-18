@@ -25,9 +25,9 @@
   },
   "scripts": {
     "dev": "bun run src/index.ts",
-    "build": "bun build src/index.ts --sourcemap=external --minify --outdir dist",
+    "build": "bun build src/index.ts --outdir dist",
     "prebuild": "rimraf dist",
-    "postbuild": "bunx tsc && tsc-alias",
+    // "postbuild": "bunx tsc && tsc-alias",
     "prepare": "husky"
   },
   "dependencies": {
